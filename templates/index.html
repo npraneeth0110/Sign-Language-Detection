@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Detection</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Trebuchet MS', sans-serif;
+            background-color: #222;
+            background-image: linear-gradient(25deg, transparent 65%, hsla(205, 80%, 40%, 1), transparent 70%),
+                              linear-gradient(-25deg, transparent 65%, hsla(205, 80%, 40%, 1), transparent 70%);
+            background-size: 5em 2em, 5em 2em;
+            color: white;
+            overflow-y: auto;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding: 20px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 254, 254, 0.1);
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        img, video {
+            border: 5px solidrgb(255, 0, 0);
+            border-radius: 10px;
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-start {
+            background-color: #28a745;
+        }
+
+        .btn-start:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-stop {
+            background-color: #ff4d4d;
+        }
+
+        .btn-stop:hover {
+            background-color: #cc0000;
+        }
+
+        .btn-upload {
+            background-color:rgb(255, 0, 170);
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .btn-upload:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-container {
+            margin-top: 15px;
+        }
+
+        .stopped-message {
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* Ensure container height doesn't cause overflow issues */
+        .container {
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: black;">Sign Language Detection</h1>
+        {% if is_running %}
+            <img src="{{ url_for('video') }}" alt="Live Video">
+        {% else %}
+            <p class="stopped-message">Detection is stopped</p>
+        {% endif %}
+
+        <div class="btn-container">
+            <a href="{{ url_for('start') }}">
+                <button class="btn btn-start">Start Detection</button>
+            </a>
+            <a href="{{ url_for('stop') }}">
+                <button class="btn btn-stop">Stop Detection</button>
+            </a>
+        </div>
+
+        <br>
+
+        <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+            <label for="file-upload" class="btn btn-upload">Choose File</label>
+            <input id="file-upload" type="file" name="file">
+            <button class="btn btn-upload" type="submit">Upload Image</button>
+        </form>
+
+        {% if uploaded_image %}
+            <h3>Uploaded Image:</h3>
+            <img src="{{ uploaded_image }}" alt="Uploaded Image">
+        {% endif %}
+
+        {% if detected_sign %}
+            <p style="color: black; font-size: 20px;">Detected Sign: {{ detected_sign }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
